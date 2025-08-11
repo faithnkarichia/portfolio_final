@@ -1,27 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 
 export default function CertificatesAdmin() {
-  const [certificates, setCertificates] = useState([
-    {
-      id: 1,
-      title: "Self-Management",
-      issuer: "African Management Institute",
-      date: "2025",
-      link: "#",
-      description:
-        "Built habits around self-discipline, focus, and resilience to achieve consistent performance.",
-    },
-    {
-      id: 2,
-      title: "Software Engineering",
-      issuer: "Moringa School",
-      date: "2025",
-      link: "#",
-      description:
-        "Focused on full-stack development using React, Python, and PostgreSQL.",
-    },
-  ]);
+  const [certificates, setCertificates] = useState([]);
+  const formRef = useRef(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -33,29 +15,79 @@ export default function CertificatesAdmin() {
 
   const [editingId, setEditingId] = useState(null);
 
+  // 🔄 Fetch certificates
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/certificates")
+      .then((res) => res.json())
+      .then((data) => Array.isArray(data) && setCertificates(data))
+      .catch((err) => console.error("Error fetching certificates:", err));
+  }, []);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleImageUpload = () => {
+    window.cloudinary.openUploadWidget(
+      {
+        cloudName: "dk1vrqeia", 
+        uploadPreset: "react_unsigned", 
+        sources: ["local", "camera", "url"],
+        multiple: false,
+        cropping: false,
+      },
+      (error, result) => {
+        if (!error && result.event === "success") {
+          const imageUrl = result.info.secure_url;
+          setForm((prevForm) => ({ ...prevForm, link: imageUrl }));
+        }
+      }
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.title || !form.issuer || !form.date || !form.link || !form.description) return;
 
-    if (editingId) {
-      setCertificates((prev) =>
-        prev.map((cert) =>
-          cert.id === editingId ? { ...cert, ...form } : cert
-        )
-      );
-      setEditingId(null);
-    } else {
-      const newCertificate = {
-        id: Date.now(),
-        ...form,
-      };
-      setCertificates([newCertificate, ...certificates]);
-    }
+    const endpoint = editingId
+      ? `http://127.0.0.1:5000/certs/${editingId}`
+      : "http://127.0.0.1:5000/add_certs";
 
+    const method = editingId ? "PUT" : "POST";
+
+    fetch(endpoint, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        fetch("http://127.0.0.1:5000/certificates")
+          .then((res) => res.json())
+          .then((updated) => setCertificates(updated));
+        resetForm();
+      })
+      .catch((err) => console.error("Error saving cert:", err));
+  };
+
+  const handleEdit = (cert) => {
+    setForm(cert);
+    setEditingId(cert.id);
+    formRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleDelete = (id) => {
+    if (!window.confirm("Delete this certificate?")) return;
+
+    fetch(`http://127.0.0.1:5000/certs/${id}`, { method: "DELETE" })
+      .then((res) => res.json())
+      .then(() => {
+        setCertificates((prev) => prev.filter((cert) => cert.id !== id));
+        if (editingId === id) resetForm();
+      })
+      .catch((err) => console.error("Delete error:", err));
+  };
+
+  const resetForm = () => {
     setForm({
       title: "",
       issuer: "",
@@ -63,15 +95,7 @@ export default function CertificatesAdmin() {
       link: "",
       description: "",
     });
-  };
-
-  const handleDelete = (id) => {
-    setCertificates(certificates.filter((cert) => cert.id !== id));
-  };
-
-  const handleEdit = (cert) => {
-    setForm(cert);
-    setEditingId(cert.id);
+    setEditingId(null);
   };
 
   return (
@@ -81,71 +105,94 @@ export default function CertificatesAdmin() {
         <h1 className="text-2xl font-bold mb-4">Manage Certificates</h1>
 
         {/* Certificate Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-xl">
+        <form
+          onSubmit={handleSubmit}
+          ref={formRef}
+          className="space-y-4 max-w-xl bg-gray-50 p-6 rounded shadow"
+        >
+          <h2 className="text-xl font-semibold">
+            {editingId ? "Edit Certificate" : "Add Certificate"}
+          </h2>
           <input
             name="title"
             value={form.title}
             onChange={handleChange}
             placeholder="Certificate Title"
-            className="w-full p-2 border border-black rounded"
+            className="w-full p-3 border border-gray-300 rounded"
           />
           <input
             name="issuer"
             value={form.issuer}
             onChange={handleChange}
             placeholder="Issuer"
-            className="w-full p-2 border border-black rounded"
+            className="w-full p-3 border border-gray-300 rounded"
           />
           <input
             name="date"
             value={form.date}
             onChange={handleChange}
             placeholder="Date"
-            className="w-full p-2 border border-black rounded"
+            className="w-full p-3 border border-gray-300 rounded"
           />
-          <input
-            name="link"
-            value={form.link}
-            onChange={handleChange}
-            placeholder="Certificate Link"
-            className="w-full p-2 border border-black rounded"
-          />
+
+          {/* Image Upload Input */}
+          <div className="flex gap-2">
+            <input
+              name="link"
+              value={form.link}
+              onChange={handleChange}
+              placeholder="Image URL"
+              className="flex-1 p-3 border border-gray-300 rounded"
+            />
+            <button
+              type="button"
+              onClick={handleImageUpload}
+              className="bg-black text-white px-4 rounded hover:bg-gray-800"
+            >
+              Upload Image
+            </button>
+          </div>
+
           <textarea
             name="description"
             value={form.description}
             onChange={handleChange}
             placeholder="Description"
-            className="w-full p-2 border border-black rounded"
+            className="w-full p-3 border border-gray-300 rounded"
+            rows={3}
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-black text-white rounded"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
           >
             {editingId ? "Update Certificate" : "Add Certificate"}
           </button>
         </form>
 
         {/* Certificate List */}
-        <div className="mt-10 space-y-4">
+        <div className="mt-10 space-y-6">
           {certificates.length === 0 ? (
             <p className="text-gray-500">No certificates added yet.</p>
           ) : (
             certificates.map((cert) => (
               <div
                 key={cert.id}
-                className=" p-4 rounded shadow-sm"
+                className="p-4 border rounded shadow-sm bg-white"
               >
                 <h2 className="text-xl font-semibold">{cert.title}</h2>
-                <p className="text-sm italic text-gray-700">{cert.issuer} — {cert.date}</p>
+                <p className="text-sm italic text-gray-700">
+                  {cert.issuer} — {cert.date}
+                </p>
                 <p className="mt-2">{cert.description}</p>
-                <a
-                  href={cert.link}
-                  className="block mt-2 text-blue-600 hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View Certificate
-                </a>
+
+                {cert.link && (
+                  <img
+                    src={cert.link}
+                    alt={cert.title}
+                    className="mt-4 rounded w-full max-h-60 object-contain"
+                  />
+                )}
+
                 <div className="flex gap-4 mt-3">
                   <button
                     onClick={() => handleEdit(cert)}

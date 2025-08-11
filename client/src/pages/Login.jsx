@@ -21,19 +21,27 @@ setLoginData((prevData)=>({
 
 
 }
-const handleSubmit = (e) => {
-    e.preventDefault(); // prevent page reload
 
-    // Basic validation
-    if (
-      loginData.email === "faith@example.com" &&
-      loginData.password === "1234"
-    ) {
-      navigate("/adminDashboard");
-      setLoginDataloginData(email="",password="")
-    } else {
-      alert("Invalid email or password!");
-    }
+
+const handleSubmit = (e) => {
+    e.preventDefault(); 
+    fetch('http://127.0.0.1:5000/login',{
+      method: "POST",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body:JSON.stringify({
+        "email":loginData.email,
+        "password": loginData.password
+      })
+
+    })
+    .then((res)=>res.json())
+    .then((data)=>{
+      console.log(data,"logged in successifully")
+      navigate("/adminDashboard")
+      // localStorage.setItem("token":)
+    })
     
   };
   return (

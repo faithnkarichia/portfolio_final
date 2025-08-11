@@ -25,12 +25,29 @@ function App() {
       <Routes>
         <Route path="/" element={
            <>
-      <Hero/>
-      <TechStack/>
-      <Projects/>
-      <Certificates/>
-      <Contact/>
-      <Footer/>
+     <div id="profile">
+  <Hero />
+</div>
+
+<div id="techstack">
+  <TechStack />
+</div>
+
+<div id="projects">
+  <Projects />
+</div>
+
+<div id="certificates">
+  <Certificates />
+</div>
+
+<div id="contacts">
+  <Contact />
+</div>
+<div id="footer">
+  <Footer />
+</div>
+
     </>
         }/>
 

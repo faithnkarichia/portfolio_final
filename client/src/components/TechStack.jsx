@@ -13,7 +13,7 @@ import {
 
 function TechStack() {
   return (
-    <div className="px-4 py-10">
+    <div className="px-4 py-10" id="techstack">
       <h1 className="text-center font-bold text-3xl mb-10">My Skills</h1>
         <div className="flex justify-center">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center md:w-[70%]">
