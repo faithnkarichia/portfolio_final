@@ -26,7 +26,7 @@ export default function Projects(){
     return(
         <div id="projects" className="flex flex-col  mb-30">
             <h1 className="font-bold text-3xl text-center mb-10 mt-10">Projects</h1>
-            <p className="text-gray-500 mb-15 text-center">Whether you have a mobile app idea that needs to come to life or a website that requires a facelift, I'm here to turn your digital dreams into reality.</p>
+            <p className="text-gray-500 mb-15 text-center">Whether you have an idea that needs to come to life or a website that requires a facelift, I'm here to turn your digital dreams into reality.</p>
             <div className="flex justify-center">
             <div className="grid grid-cols-1 md:grid-cols-3  w-[80%] gap-5">
                 
