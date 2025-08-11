@@ -5,7 +5,7 @@ export default function Projects(){
     const[selectedProject, setSelectedProject]=useState(null)
     const[showModal,setShowModal]=useState(false)
     useEffect(()=>{
-        fetch('http://127.0.0.1:5000/projects')
+        fetch(`${import.meta.env.VITE_SERVER_URL}/projects`)
         .then(res=>res.json())
         .then((data)=>{
             console.log(data,"my client projects")

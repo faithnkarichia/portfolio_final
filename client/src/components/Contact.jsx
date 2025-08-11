@@ -18,7 +18,7 @@ setContactInfo((prev)=>({...prev,[name]:value}))
   const handleSubmit=(e)=>{
 e.preventDefault()
 
-fetch("http://127.0.0.1:5000/contacts",{
+fetch(`${import.meta.env.VITE_SERVER_URL}/contacts`,{
   method:"POST",
   headers:{
     "Content-Type":"application/json"

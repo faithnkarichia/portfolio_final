@@ -17,7 +17,7 @@ export default function CertificatesAdmin() {
 
   // 🔄 Fetch certificates
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/certificates")
+    fetch(`${import.meta.env.VITE_SERVER_URL}/certificates`)
       .then((res) => res.json())
       .then((data) => Array.isArray(data) && setCertificates(data))
       .catch((err) => console.error("Error fetching certificates:", err));
@@ -49,8 +49,8 @@ export default function CertificatesAdmin() {
     e.preventDefault();
 
     const endpoint = editingId
-      ? `http://127.0.0.1:5000/certs/${editingId}`
-      : "http://127.0.0.1:5000/add_certs";
+      ? `${import.meta.env.VITE_SERVER_URL}/certs/${editingId}`
+      : `${import.meta.env.VITE_SERVER_URL}/add_certs`;
 
     const method = editingId ? "PUT" : "POST";
 
@@ -61,7 +61,7 @@ export default function CertificatesAdmin() {
     })
       .then((res) => res.json())
       .then(() => {
-        fetch("http://127.0.0.1:5000/certificates")
+        fetch(`${import.meta.env.VITE_SERVER_URL}/certificates`)
           .then((res) => res.json())
           .then((updated) => setCertificates(updated));
         resetForm();
@@ -78,7 +78,7 @@ export default function CertificatesAdmin() {
   const handleDelete = (id) => {
     if (!window.confirm("Delete this certificate?")) return;
 
-    fetch(`http://127.0.0.1:5000/certs/${id}`, { method: "DELETE" })
+    fetch(`${import.meta.env.VITE_SERVER_URL}/certs/${id}`, { method: "DELETE" })
       .then((res) => res.json())
       .then(() => {
         setCertificates((prev) => prev.filter((cert) => cert.id !== id));

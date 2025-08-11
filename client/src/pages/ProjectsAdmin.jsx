@@ -19,7 +19,7 @@ export default function ProjectsAdmin() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editingId){
- fetch(`http://127.0.0.1:5000/projects/${editingId}`, {
+ fetch(`${import.meta.env.VITE_SERVER_URL}/projects/${editingId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export default function ProjectsAdmin() {
     }
     else{
     if (!form.name || !form.description || !form.link) return;
-    fetch('http://127.0.0.1:5000/add_project',{
+    fetch(`${import.meta.env.VITE_SERVER_URL}/add_project`,{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
@@ -65,7 +65,7 @@ export default function ProjectsAdmin() {
 
 
   useEffect(()=>{
-  fetch('http://127.0.0.1:5000/projects')
+  fetch(`${import.meta.env.VITE_SERVER_URL}/projects`)
   .then((res)=>res.json())
   .then((data)=>{
     // update the form data
@@ -85,7 +85,7 @@ export default function ProjectsAdmin() {
   const confirmDelete = window.confirm("Are you sure you want to delete this project?");
   if (!confirmDelete) return;
 
-  fetch(`http://127.0.0.1:5000/projects/${id}`, {
+  fetch(`${import.meta.env.VITE_SERVER_URL}/projects/${id}`, {
     method: 'DELETE',
   })
     .then((res) => {

@@ -7,7 +7,7 @@ export default function Certificates() {
   const [isModalOpen, setIsModalOpen] = useState(false);    // 🌟 Modal visibility
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/certificates")
+    fetch(`${import.meta.env.VITE_SERVER_URL}/certificates`)
       .then((res) => res.json())
       .then((data) => setCertificates(data));
   }, []);
