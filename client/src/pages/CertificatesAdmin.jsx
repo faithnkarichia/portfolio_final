@@ -30,7 +30,7 @@ export default function CertificatesAdmin() {
   const handleImageUpload = () => {
     window.cloudinary.openUploadWidget(
       {
-        cloudName: "dk1vrqeia", 
+        cloudName: import.meta.env.VITE_CLOUD_NAME, 
         uploadPreset: "react_unsigned", 
         sources: ["local", "camera", "url"],
         multiple: false,

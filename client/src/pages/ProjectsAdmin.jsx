@@ -123,7 +123,7 @@ export default function ProjectsAdmin() {
   const handleImageUpload = () => {
     window.cloudinary.openUploadWidget(
       {
-        cloudName: "dk1vrqeia", // 🔁 Replace with your Cloudinary cloud name
+        cloudName: import.meta.env.VITE_CLOUD_NAME, // 🔁 Replace with your Cloudinary cloud name
         uploadPreset: "react_unsigned", // 🔁 Replace with your unsigned upload preset
         sources: ["local", "camera", "url"],
         multiple: false,
