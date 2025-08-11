@@ -37,8 +37,8 @@ class Project(db.Model):
     name=db.Column(db.String, nullable=False)
     link=db.Column(db.String ,nullable=False)
     description=db.Column(db.String, nullable=False)
-    live_link=db.Column(db.Integer, nullable= True)
-    github_link=db.Column(db.Integer, nullable=True)
+    live_link=db.Column(db.String, nullable= True)
+    github_link=db.Column(db.String, nullable=True)
 
 
 class User(db.Model):
