@@ -33,7 +33,7 @@ export default function Hero() {
           <button onClick={() => scrollToSection("projects")} className="px-4 py-2 font-bold hover:text-gray-400">Projects</button>
           <button onClick={() => scrollToSection("techstack")} className="px-4 py-2 font-bold hover:text-gray-400">Tech Stack</button>
           <button onClick={() => scrollToSection("certificates")} className="px-4 py-2 font-bold hover:text-gray-400">Certificates</button>
-          <button onClick={handleLoginClick} className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300 font-bold">Admin Signup</button>
+          <button onClick={handleLoginClick} className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300 font-bold">Admin Signin</button>
         </div>
 
         {/* Mobile Menu Button */}
